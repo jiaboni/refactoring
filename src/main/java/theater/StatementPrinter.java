@@ -30,19 +30,24 @@ public class StatementPrinter {
      */
 
     public String statement() {
-        int totalAmount = 0;
         final StringBuilder result = new StringBuilder("Statement for " + invoice.getCustomer()
                 + System.lineSeparator());
-
         for (Performance p : invoice.getPerformances()) {
             // print line for this order
             result.append(String.format("  %s: %s (%s seats)%n", getPlay(p).getName(),
                     usd(getAmount(p) / Constants.PERCENT_FACTOR), p.getAudience()));
-            totalAmount += getAmount(p);
         }
-        result.append(String.format("Amount owed is %s%n", usd(totalAmount / Constants.PERCENT_FACTOR)));
+        result.append(String.format("Amount owed is %s%n", usd(getTotalAmount() / Constants.PERCENT_FACTOR)));
         result.append(String.format("You earned %s credits%n", getTotalVolumeCredits()));
         return result.toString();
+    }
+
+    private int getTotalAmount() {
+        int totalAmount = 0;
+        for (Performance p : invoice.getPerformances()) {
+            totalAmount += getAmount(p);
+        }
+        return totalAmount;
     }
 
     private int getTotalVolumeCredits() {
